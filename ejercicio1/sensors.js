@@ -1,4 +1,13 @@
-class Sensor {}
+class Sensor {
+    constructor(id, name, type, value, unit, updatedAt){
+        this.id;
+        this.name;
+        this.type = `temperature` || `humidity` || `pressure`;
+        this.value;
+        this.unit;
+        this.updatedAt;
+    }
+}
 
 class SensorManager {
     constructor() {
