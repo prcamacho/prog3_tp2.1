@@ -13,7 +13,7 @@ class Sensor {
     conditions.forEach((element) => {
       if (type === element) {
         console.log("Valor ingresado correctamente.");
-        this.value = type;
+        this.type = type;
       }
     });
   }
@@ -38,20 +38,20 @@ class SensorManager {
     if (sensor) {
       let newValue;
       switch (sensor.type) {
-        case "temperatura": // Rango de -30 a 50 grados Celsius
+        case "temperature": // Rango de -30 a 50 grados Celsius
           newValue = (Math.random() * 80 - 30).toFixed(2);
           break;
-        case "humedad": // Rango de 0 a 100%
+        case "humidity": // Rango de 0 a 100%
           newValue = (Math.random() * 100).toFixed(2);
           break;
-        case "presion": // Rango de 960 a 1040 hPa (hectopascales o milibares)
+        case "pressure": // Rango de 960 a 1040 hPa (hectopascales o milibares)
           newValue = (Math.random() * 80 + 960).toFixed(2);
           break;
         default: // Valor por defecto si el tipo es desconocido
           newValue = (Math.random() * 100).toFixed(2);
       }
       sensor.updateValue = newValue;
-      console.log(newValue);
+
       this.render();
     } else {
       console.error(`Sensor ID ${id} no encontrado`);
@@ -59,10 +59,18 @@ class SensorManager {
   }
 
   async loadSensors(url) {
-    fetch(url)
+    await fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        data.forEach((sensor) => {
+        data.forEach((sensorData) => {
+          const sensor = new Sensor(
+            sensorData.id,
+            sensorData.name,
+            sensorData.type,
+            sensorData.value,
+            sensorData.unit,
+            sensorData.updatedAt
+          );
           this.addSensor(sensor);
         });
       })
@@ -94,9 +102,9 @@ class SensorManager {
                                ${sensor.value} ${sensor.unit}
                             </p>
                         </div>
-                        <time datetime="${sensor.updated_at}">
+                        <time datetime="${sensor.updatedAt}">
                             Última actualización: ${new Date(
-                              sensor.updated_at
+                              sensor.updatedAt
                             ).toLocaleString()}
                         </time>
                     </div>
